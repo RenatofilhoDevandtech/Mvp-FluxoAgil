@@ -2,7 +2,7 @@
 // Foco principal no módulo de Obrigações Acessórias, com estrutura para os demais e Dashboard.
 
 import React, { useState, useEffect, useCallback } from 'react';
-import LogoMdias from '../public/logo-Mdias.svg';
+import LogoMdias from './assets/Logo-Mdias.svg';
 // --- Configuração e Utilitários Globais ---
 const formatDate = (dateString, format = "dd/mmm/yyyy") => {
     if (!dateString) return '';
