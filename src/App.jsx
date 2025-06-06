@@ -1,4 +1,4 @@
-// App.js - Simulação da Suite de Gestão Integrada com Múltiplos Módulos
+// App.jsx - Simulação da Suite de Gestão Integrada com Múltiplos Módulos
 // Foco principal no módulo de Obrigações Acessórias, com estrutura para os demais e Dashboard.
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -52,8 +52,8 @@ const formatDate = (dateString, format = "dd/mmm/yyyy") => {
              return `${year}-${month}`;
         }
         return adjustedDate.toLocaleDateString(locale, options);
-    } catch (error) {
-        console.error("Error formatting date:", dateString, format, error);
+    } catch {
+        console.error("Error formatting date:", dateString, format);
         return "Data Inválida";
     }
 };
@@ -68,7 +68,7 @@ const dateDiffInDays = (dateStr1, dateStr2) => {
         const d2 = new Date(Date.UTC(d2_val.getFullYear(), d2_val.getMonth(), d2_val.getDate()));
 
         return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
-    } catch (error) {
+    } catch {
         return NaN;
     }
 };
@@ -90,14 +90,14 @@ const initialColaboradores = [
 
 let dbObrigacoes = [
     { id: 'ob0', NomeObrigacao: 'SPED Contribuições - Matriz', Filial: '01 - Matriz CE', UF_Origem: 'CE', ColaboradorResponsavel_FK: initialColaboradores[0], Periodicidade: 'Mensal', DataReferencia: '2025-04-01', PrazoLegal: '2025-05-15', PrazoLimiteEmpresa: '2025-05-14', StatusEntrega: 'Entregue', DataEnvioEfetiva: '2025-05-10T11:00:00Z', ObservacaoMVP: 'OK', Anexos: [], Unidade: 'Fiscal', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '2 dias', LinkLegislacao: '#' },
-    { id: 'ob-1', NomeObrigacao: 'GIA ST - SP', Filial: '02 - Filial SP', UF_Origem: 'SP', ColaboradorResponsavel_FK: initialColaboradores[3], Periodicidade: 'Mensal', DataReferencia: '2025-05-01', PrazoLegal: '2025-06-18', PrazoLimiteEmpresa: '2025-06-17', StatusEntrega: 'Entregue com Atraso', DataEnvioEfetiva: '2025-06-20T10:00:00Z', ObservacaoMVP: 'Atraso na coleta de dados.', Anexos: [], Unidade: 'Fiscal', CNPJ: '11.222.333/0003-66', UF_Destino: 'N/A', Nivel: 'Estadual', TempoExecucaoEstimado: '1 dia', LinkLegislacao: '#' },
-    { id: 'ob-2', NomeObrigacao: 'EFD Reinf - Geral', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[1], Periodicidade: 'Mensal', DataReferencia: '2025-05-01', PrazoLegal: '2025-06-15', PrazoLimiteEmpresa: '2025-06-14', StatusEntrega: 'Entregue', DataEnvioEfetiva: '2025-06-10T16:00:00Z', ObservacaoMVP: 'OK', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '3 dias', LinkLegislacao: '#' },
-    { id: 'ob1', NomeObrigacao: 'GIA ST - CE', Filial: '01 - Matriz CE', UF_Origem: 'CE', ColaboradorResponsavel_FK: initialColaboradores[0], Periodicidade: 'Mensal', DataReferencia: '2025-07-01', PrazoLegal: '2025-08-20', PrazoLimiteEmpresa: '2025-08-19', StatusEntrega: 'Pendente', DataEnvioEfetiva: null, ObservacaoMVP: 'Verificar novas regras.', Anexos: [], Unidade: 'Fiscal', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Estadual', TempoExecucaoEstimado: '2 dias', LinkLegislacao: 'http://example.com/gia-st-ce' },
-    { id: 'ob2', NomeObrigacao: 'SPED Fiscal - PE', Filial: '05 - Filial PE', UF_Origem: 'PE', ColaboradorResponsavel_FK: initialColaboradores[1], Periodicidade: 'Mensal', DataReferencia: '2025-06-01', PrazoLegal: '2025-07-25', PrazoLimiteEmpresa: '2025-07-24', StatusEntrega: 'Entregue', DataEnvioEfetiva: '2025-07-22T10:30:00Z', ObservacaoMVP: 'OK.', Anexos: [{ nome: 'comprov_sped_pe.pdf', url: '#' }], Unidade: 'Fiscal', CNPJ: '11.222.333/0002-55', UF_Destino: 'N/A', Nivel: 'Estadual', TempoExecucaoEstimado: '3 dias', LinkLegislacao: 'http://example.com/sped-pe'},
-    { id: 'ob3', NomeObrigacao: 'DCTF - Federal', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[0], Periodicidade: 'Mensal', DataReferencia: '2025-06-01', PrazoLegal: '2025-07-20', PrazoLimiteEmpresa: '2025-07-19', StatusEntrega: 'Pendente', DataEnvioEfetiva: null, ObservacaoMVP: 'Análise pendente.', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '1 dia', LinkLegislacao: 'http://example.com/dctf' },
-    { id: 'ob4', NomeObrigacao: 'DEFIS', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[2], Periodicidade: 'Anual', DataReferencia: '2024-12-01', PrazoLegal: '2025-03-31', PrazoLimiteEmpresa: '2025-03-30', StatusEntrega: 'Em Preparação', DataEnvioEfetiva: null, ObservacaoMVP: 'Coletando dados.', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '5 dias', LinkLegislacao: 'http://example.com/defis' },
-    { id: 'ob5', NomeObrigacao: 'ECF', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[1], Periodicidade: 'Anual', DataReferencia: '2024-12-01', PrazoLegal: '2025-07-31', PrazoLimiteEmpresa: '2025-07-30', StatusEntrega: 'Pendente', DataEnvioEfetiva: null, ObservacaoMVP: 'A iniciar.', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '10 dias', LinkLegislacao: 'http://example.com/ecf' },
-    { id: 'ob6', NomeObrigacao: 'RAIS', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[2], Periodicidade: 'Anual', DataReferencia: '2024-12-01', PrazoLegal: '2025-04-10', PrazoLimiteEmpresa: '2025-04-09', StatusEntrega: 'Entregue com Atraso', DataEnvioEfetiva: '2025-04-12T15:00:00Z', ObservacaoMVP: 'Atraso devido a sistema.', Anexos: [{nome: 'rais_comprov.pdf', url:'#'}], Unidade: 'RH', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '3 dias', LinkLegislacao: 'http://example.com/rais' },
+    { id: 'ob1', NomeObrigacao: 'GIA ST - SP', Filial: '02 - Filial SP', UF_Origem: 'SP', ColaboradorResponsavel_FK: initialColaboradores[3], Periodicidade: 'Mensal', DataReferencia: '2025-05-01', PrazoLegal: '2025-06-18', PrazoLimiteEmpresa: '2025-06-17', StatusEntrega: 'Entregue com Atraso', DataEnvioEfetiva: '2025-06-20T10:00:00Z', ObservacaoMVP: 'Atraso na coleta de dados.', Anexos: [], Unidade: 'Fiscal', CNPJ: '11.222.333/0003-66', UF_Destino: 'N/A', Nivel: 'Estadual', TempoExecucaoEstimado: '1 dia', LinkLegislacao: '#' },
+    { id: 'ob2', NomeObrigacao: 'EFD Reinf - Geral', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[1], Periodicidade: 'Mensal', DataReferencia: '2025-05-01', PrazoLegal: '2025-06-15', PrazoLimiteEmpresa: '2025-06-14', StatusEntrega: 'Entregue', DataEnvioEfetiva: '2025-06-10T16:00:00Z', ObservacaoMVP: 'OK', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '3 dias', LinkLegislacao: '#' },
+    { id: 'ob3', NomeObrigacao: 'GIA ST - CE', Filial: '01 - Matriz CE', UF_Origem: 'CE', ColaboradorResponsavel_FK: initialColaboradores[0], Periodicidade: 'Mensal', DataReferencia: '2025-07-01', PrazoLegal: '2025-08-20', PrazoLimiteEmpresa: '2025-08-19', StatusEntrega: 'Pendente', DataEnvioEfetiva: null, ObservacaoMVP: 'Verificar novas regras.', Anexos: [], Unidade: 'Fiscal', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Estadual', TempoExecucaoEstimado: '2 dias', LinkLegislacao: 'http://example.com/gia-st-ce' },
+    { id: 'ob4', NomeObrigacao: 'SPED Fiscal - PE', Filial: '05 - Filial PE', UF_Origem: 'PE', ColaboradorResponsavel_FK: initialColaboradores[1], Periodicidade: 'Mensal', DataReferencia: '2025-06-01', PrazoLegal: '2025-07-25', PrazoLimiteEmpresa: '2025-07-24', StatusEntrega: 'Entregue', DataEnvioEfetiva: '2025-07-22T10:30:00Z', ObservacaoMVP: 'OK.', Anexos: [{ nome: 'comprov_sped_pe.pdf', url: '#' }], Unidade: 'Fiscal', CNPJ: '11.222.333/0002-55', UF_Destino: 'N/A', Nivel: 'Estadual', TempoExecucaoEstimado: '3 dias', LinkLegislacao: 'http://example.com/sped-pe'},
+    { id: 'ob5', NomeObrigacao: 'DCTF - Federal', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[0], Periodicidade: 'Mensal', DataReferencia: '2025-06-01', PrazoLegal: '2025-07-20', PrazoLimiteEmpresa: '2025-07-19', StatusEntrega: 'Pendente', DataEnvioEfetiva: null, ObservacaoMVP: 'Análise pendente.', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '1 dia', LinkLegislacao: 'http://example.com/dctf' },
+    { id: 'ob6', NomeObrigacao: 'DEFIS', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[2], Periodicidade: 'Anual', DataReferencia: '2024-12-01', PrazoLegal: '2025-03-31', PrazoLimiteEmpresa: '2025-03-30', StatusEntrega: 'Em Preparação', DataEnvioEfetiva: null, ObservacaoMVP: 'Coletando dados.', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '5 dias', LinkLegislacao: 'http://example.com/defis' },
+    { id: 'ob7', NomeObrigacao: 'ECF', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[1], Periodicidade: 'Anual', DataReferencia: '2024-12-01', PrazoLegal: '2025-07-31', PrazoLimiteEmpresa: '2025-07-30', StatusEntrega: 'Pendente', DataEnvioEfetiva: null, ObservacaoMVP: 'A iniciar.', Anexos: [], Unidade: 'Contabilidade', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '10 dias', LinkLegislacao: 'http://example.com/ecf' },
+    { id: 'ob8', NomeObrigacao: 'RAIS', Filial: 'Geral', UF_Origem: 'N/A', ColaboradorResponsavel_FK: initialColaboradores[2], Periodicidade: 'Anual', DataReferencia: '2024-12-01', PrazoLegal: '2025-04-10', PrazoLimiteEmpresa: '2025-04-09', StatusEntrega: 'Entregue com Atraso', DataEnvioEfetiva: '2025-04-12T15:00:00Z', ObservacaoMVP: 'Atraso devido a sistema.', Anexos: [{nome: 'rais_comprov.pdf', url:'#'}], Unidade: 'RH', CNPJ: '11.222.333/0001-44', UF_Destino: 'N/A', Nivel: 'Federal', TempoExecucaoEstimado: '3 dias', LinkLegislacao: 'http://example.com/rais' },
 ];
 let dbAgendaItens = [
     { id: 'ag1', Titulo: 'Reunião Pós Fechamento Fiscal JUL/25', Colaborador_FK: initialColaboradores[0], DataInicio: '2025-08-08T10:00:00', DataFim: '2025-08-08T12:00:00', DiaInteiro: false, TipoItem: 'Reunião', StatusTarefa: 'Não Iniciada', Prioridade: 'Média', Local: 'Sala A', DescricaoDetalhada: 'Discussão dos resultados e pontos de melhoria.', ProjetoVinculado_FK: null, Anexos:[] },
@@ -192,7 +192,7 @@ const AppHeader = ({ currentModule }) => (
     <div className="text-sm hidden sm:block">Módulo: <span className="font-bold">{currentModule}</span></div>
   </header>
 );
-const Sidebar = ({ onNavigate, currentModule }) => ( /* ... (código anterior com ícones) ... */ 
+const Sidebar = ({ onNavigate, currentModule }) => (
     <aside className="w-16 sm:w-64 bg-gray-800 text-white p-2 sm:p-4 space-y-1 sm:space-y-2 transition-all duration-200 flex-shrink-0">
         <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-4 hidden sm:block">Módulos</h2>
         {[
@@ -212,7 +212,7 @@ const Sidebar = ({ onNavigate, currentModule }) => ( /* ... (código anterior co
 );
 
 // --- Módulo: Obrigações Acessórias ---
-const ObligationFilterControls = ({ statusOptions, onFilterChange, currentFilters }) => ( /* ... (código anterior) ... */ 
+const ObligationFilterControls = ({ statusOptions, onFilterChange, currentFilters }) => (
     <div className="p-3 sm:p-4 bg-gray-100 flex flex-col sm:flex-row gap-3 sm:gap-4">
         <select value={currentFilters.status} onChange={(e) => onFilterChange({ ...currentFilters, status: e.target.value })}
             className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 w-full sm:w-1/2 text-sm">
@@ -223,7 +223,7 @@ const ObligationFilterControls = ({ statusOptions, onFilterChange, currentFilter
             className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 w-full sm:w-1/2 text-sm"/>
     </div>
 );
-const ObligationItemCard = ({ obrigacao, onEdit }) => ( /* ... (código anterior) ... */ 
+const ObligationItemCard = ({ obrigacao, onEdit }) => (
     <div className={`p-3 rounded-lg shadow border transition-all duration-150 cursor-pointer flex flex-col justify-between ${
         obrigacao.StatusEntrega !== 'Entregue' ? 
             (dateDiffInDays(new Date().toISOString().split('T')[0], obrigacao.PrazoLimiteEmpresa) < 0 ? 'bg-red-50 hover:bg-red-100 border-red-300' : 
@@ -245,12 +245,12 @@ const ObligationItemCard = ({ obrigacao, onEdit }) => ( /* ... (código anterior
             className="mt-2 text-xs text-blue-500 hover:text-blue-700 self-end">Ver Detalhes &rarr;</button>
     </div>
 );
-const ObligationListGrid = ({ obrigacoes, onEdit }) => ( /* ... (código anterior) ... */ 
+const ObligationListGrid = ({ obrigacoes, onEdit }) => (
     <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
         {obrigacoes.map(ob => <ObligationItemCard key={ob.id} obrigacao={ob} onEdit={onEdit} />)}
     </div>
 );
-const ObligationFormFields = ({ formData, handleChange, isSaving }) => { /* ... (código anterior) ... */ 
+const ObligationFormFields = ({ formData, handleChange, isSaving }) => {
     const ufs = ["", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO", "N/A"];
     const periodicidades = ["", "Mensal", "Bimestral", "Trimestral", "Semestral", "Anual", "Eventual"];
     const statusEntregaOptions = ["Pendente", "Em Preparação", "Entregue", "Entregue com Atraso"];
@@ -327,7 +327,7 @@ const ObligationFormFields = ({ formData, handleChange, isSaving }) => { /* ... 
         </div>
     );
 };
-const GenericFormModal = ({ isOpen, onClose, onSave, title, initialData = {}, formFieldsComponent: FormFieldsComponent }) => { 
+const GenericFormModal = ({ isOpen, onClose, onSave, title, initialData = {}, formFieldsComponent }) => { 
     const [formData, setFormData] = useState(initialData);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -368,7 +368,7 @@ const GenericFormModal = ({ isOpen, onClose, onSave, title, initialData = {}, fo
             else if (dataToSave[field] && dataToSave[field].includes && dataToSave[field].includes('T')) { 
                  // Input tipo datetime-local (YYYY-MM-DDTHH:MM), convertendo para data YYYY-MM-DD (pega só a data)
                  try { dataToSave[field] = new Date(dataToSave[field]).toISOString().split('T')[0]; }
-                 catch(er) { console.warn(`Erro ao converter data ${field} (datetime-local): ${dataToSave[field]}`)}
+                 catch { console.warn(`Erro ao converter data ${field} (datetime-local): ${dataToSave[field]}`)}
             } else if (dataToSave[field]) { // Outros formatos de data (ex: objeto Date)
                  try {
                     let dateObj = new Date(dataToSave[field]);
@@ -378,7 +378,7 @@ const GenericFormModal = ({ isOpen, onClose, onSave, title, initialData = {}, fo
                         dateObj = new Date(Date.UTC(year, month - 1, day));
                     }
                     dataToSave[field] = dateObj.toISOString().split('T')[0]; 
-                 } catch(e){ console.error(`Erro ao converter data ${field}: ${dataToSave[field]}`)}
+                 } catch { console.error(`Erro ao converter data ${field}: ${dataToSave[field]}`)}
             }
         });
         
@@ -388,7 +388,7 @@ const GenericFormModal = ({ isOpen, onClose, onSave, title, initialData = {}, fo
                     if(!dataToSave[field].endsWith('Z')){ // Se não for ISO com Z, converte
                         dataToSave[field] = new Date(dataToSave[field]).toISOString();
                     }
-                 } catch (err) { console.error("Erro ao converter data-hora: ", field, dataToSave[field])}
+                 } catch { console.error("Erro ao converter data-hora: ", field, dataToSave[field])}
              }
         });
         await onSave(dataToSave);
@@ -406,7 +406,7 @@ const GenericFormModal = ({ isOpen, onClose, onSave, title, initialData = {}, fo
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-2xl p-1">&times;</button>
                 </div>
                 <form onSubmit={handleSubmit} id={`modalForm-${title.replace(/\s+/g, '-')}`} className="space-y-3 sm:space-y-4 overflow-y-auto pr-1 sm:pr-2 flex-grow">
-                    <FormFieldsComponent formData={formData} handleChange={handleChange} isSaving={isSaving} />
+                    {formFieldsComponent && React.createElement(formFieldsComponent, { formData, handleChange, isSaving })}
                 </form>
                  <div className="flex justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t mt-3 sm:mt-4 flex-shrink-0">
                     <button type="button" onClick={onClose} className="py-2 px-3 sm:px-4 border border-gray-300 rounded-md text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50" disabled={isSaving}>
@@ -422,7 +422,7 @@ const GenericFormModal = ({ isOpen, onClose, onSave, title, initialData = {}, fo
 };
 
 // --- Módulos ---
-const ObrigacoesScreen = ({ onEdit, onAdd, allObrigacoes }) => { /* ... (código anterior) ... */ 
+const ObrigacoesScreen = ({ onEdit, onAdd, allObrigacoes }) => {
     const [filteredObrigacoes, setFilteredObrigacoes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filters, setFilters] = useState({ status: '', responsavel: '' });
@@ -455,7 +455,7 @@ const ObrigacoesScreen = ({ onEdit, onAdd, allObrigacoes }) => { /* ... (código
         </div>
     );
 };
-const AgendaItemFormFields = ({ formData, handleChange, isSaving }) => ( /* ... (código anterior) ... */ 
+const AgendaItemFormFields = ({ formData, handleChange, isSaving }) => (
     <div className="space-y-3">
         <div><label htmlFor="Titulo" className="block text-sm font-medium text-gray-700">Título*</label><input type="text" name="Titulo" value={formData.Titulo || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 text-sm" required disabled={isSaving}/></div>
         <div>
@@ -481,7 +481,7 @@ const AgendaItemFormFields = ({ formData, handleChange, isSaving }) => ( /* ... 
         {/* Adicionar campo para Anexos se necessário para Agenda */}
     </div>
 );
-const AgendaScreen = ({ onEdit, onAdd, allAgendaItens }) => ( /* ... (código anterior) ... */ 
+const AgendaScreen = ({ onEdit, onAdd, allAgendaItens }) => (
     <div className="h-full flex flex-col">
         <div className="p-3 sm:p-4 border-b flex justify-between items-center bg-white sticky top-0 z-30">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-700">Agenda de Trabalho</h2>
@@ -509,7 +509,7 @@ const AgendaScreen = ({ onEdit, onAdd, allAgendaItens }) => ( /* ... (código an
 );
 
 // --- Módulo: Checklist de Fechamento ---
-const ChecklistItemFormFields = ({ formData, handleChange, isSaving }) => { /* ... (código anterior) ... */ 
+const ChecklistItemFormFields = ({ formData, handleChange, isSaving }) => {
     const labelClass = "block text-sm font-medium text-gray-700";
     const inputClass = "mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 text-sm";
     const statusChecklistOptions = ["Pendente", "Em Andamento", "Concluído", "OK", "Bloqueado", "Não Aplicável"];
@@ -550,7 +550,7 @@ const ChecklistItemFormFields = ({ formData, handleChange, isSaving }) => { /* .
         </div>
     );
 };
-const ChecklistScreen = ({ onEdit, onAdd, allChecklistItens }) => { /* ... (código anterior) ... */ 
+const ChecklistScreen = ({ onEdit, onAdd, allChecklistItens }) => {
     const [isLoading, setIsLoading] = useState(true);
     // Adicionar filtros para Checklist se necessário
      useEffect(()=>{ if(allChecklistItens) setIsLoading(false);}, [allChecklistItens]);
@@ -581,7 +581,7 @@ const ChecklistScreen = ({ onEdit, onAdd, allChecklistItens }) => { /* ... (cód
 };
 
 // --- Módulo: Encaminhamentos Internos ---
-const EncaminhamentoFormFields = ({ formData, handleChange, isSaving }) => { /* ... (código anterior) ... */ 
+const EncaminhamentoFormFields = ({ formData, handleChange, isSaving }) => {
     const labelClass = "block text-sm font-medium text-gray-700";
     const inputClass = "mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 text-sm";
     const statusEncOptions = ["Pendente ID Fornecedor", "Concluído", "Em Andamento", "Cancelado", "Resolvido", "Aguardando verificação", "Aguardando avaliação", "Pendente", "Baixado"];
@@ -613,7 +613,7 @@ const EncaminhamentoFormFields = ({ formData, handleChange, isSaving }) => { /* 
         </div>
     );
 };
-const EncaminhamentosScreen = ({ onEdit, onAdd, allEncaminhamentos }) => { /* ... (código anterior) ... */ 
+const EncaminhamentosScreen = ({ onEdit, onAdd, allEncaminhamentos }) => {
     const [isLoading, setIsLoading] = useState(true);
     // Adicionar filtros para Encaminhamentos aqui se necessário
     useEffect(()=>{ if(allEncaminhamentos) setIsLoading(false);}, [allEncaminhamentos]);
@@ -804,7 +804,7 @@ const DashboardScreen = ({ allObrigacoes }) => {
 };
 
 // --- Componente Principal da Aplicação ---
-function App() { /* ... (código anterior, com a lógica de fetchAllData e save para os novos módulos) ... */ 
+function App() {
     const [currentModuleId, setCurrentModuleId] = useState('dashboard');
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
@@ -822,6 +822,10 @@ function App() { /* ... (código anterior, com a lógica de fetchAllData e save 
         agenda: 'Agenda de Trabalho',
         checklist: 'Checklist de Fechamento',
         encaminhamentos: 'Encaminhamentos Internos',
+        obrigacao: 'Obrigação',
+        agendaItem: 'Evento de Agenda',
+        checklistItem: 'Item de Checklist',
+        encaminhamento: 'Encaminhamento',
     };
 
     const fetchAllData = useCallback(async () => {
