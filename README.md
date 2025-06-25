@@ -1,3 +1,6 @@
+
+[Macbook-Air-mvp-fluxo-agil.vercel.app-6ise_cn6-1n_1u.webm](https://github.com/user-attachments/assets/9069db29-cafc-4825-b6cd-7a04a3be0c34)
+
 # Gestor Integrado Inteligente (GII) - M. Dias Branco
 
 **Transformando a Gestão Fiscal e Operacional Através da Automação e Inteligência.**
